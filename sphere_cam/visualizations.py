@@ -71,8 +71,6 @@ def visualize_cube_sphere(cube_tensor):
         [None,    5,    None,  None]   # bottom
     ]
 
-    print("Face Layout:")
-    
     # Prepare figure for visualization
     fig, axes = plt.subplots(3, 4, figsize=(16, 8))
     plt.suptitle("Cube Sphere Visualization - Depth and Semantic Classes")
