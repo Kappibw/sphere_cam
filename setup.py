@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="YourProjectName",
+    name="SphereCam",
     version="0.1.0",
-    description="A brief description of your project",
-    author="Your Name",
-    author_email="your.email@example.com",
+    description="Tool for mapping multiple camera images to an egocentric sphere",
+    author="Kappi",
+    author_email="kappi.patterson@gmail.com",
     packages=find_packages(),
     install_requires=[
         'contourpy==1.3.0',
@@ -45,5 +45,5 @@ setup(
         'typing_extensions==4.12.2',
         'wheel==0.44.0'
     ],
-    python_requires=">=3.7",  # Adjust to your specific version requirements
+    python_requires="==3.10.14",
 )
