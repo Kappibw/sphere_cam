@@ -117,40 +117,6 @@ def filter_invalid_points(points, device=None):
 
     return points
 
-class TangentialWarp:
-    """
-    For visualization with Wolfram Alpha:
-
-    Optimized:
-    ----------
-    - Warp: 'y = tan(x * 0.8687) / tan(0.8687), (x from -1 to 1), (y from -1 to 1)'
-
-    Classic:
-    --------
-    - Warp: 'y = atan(x * tan(pi/4)) / (pi/4), (x from -1 to 1), (y from -1 to 1)'
-    - Unwarp: 'y = tan(x * pi/4) / tan(pi/4), (x from -1 to 1), (y from -1 to 1)'
-    """
-    class Theta:
-        classic = np.pi/4
-        optimized = 0.8687
-
-    def __init__(self, theta = Theta.classic):
-        """
-
-        Parameters
-        ----------
-        theta Free parameter, float > 0 or simply one of the constants in TangentialWarp.Theta
-        """
-        self.theta = theta
-        self.tan_theta = np.tan(self.theta)
-
-    def warp(self, cube_face_coordinates):
-        uv_coordinates = torch.tan(cube_face_coordinates * self.theta) / self.tan_theta
-        return uv_coordinates
-
-    def unwarp(self, uv_coordinates):
-        cube_face_coordinates = torch.arctan(self.tan_theta * uv_coordinates) / self.theta
-        return cube_face_coordinates
 
 def get_cube_coordinates(points_coordinates, distances, warping_method):
     """

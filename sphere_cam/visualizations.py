@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
 
 def visualize_point_cloud(points_3d, depth_image, downsample_factor=10):
     """
@@ -106,4 +107,29 @@ def visualize_cube_sphere(cube_tensor):
                 axes[row, col].imshow(semantic_img, cmap='tab20')
                 axes[row, col].set_title(f"Face {face_index} - Semantic")
                 axes[row, col].axis('off')
+    plt.show()
+
+def vizualize_warp(warp_instance):
+    grid_x, grid_y = np.meshgrid(np.linspace(-1, 1, 25), np.linspace(-1, 1, 25))
+    points = np.stack((grid_x.ravel(), grid_y.ravel()), axis=-1)
+    points_torch = torch.tensor(points, dtype=torch.float32)
+
+    # Warp the points
+    warped_points = warp_instance.warp(points_torch)
+
+    # Plotting
+    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    axes[0].scatter(points[:, 0], points[:, 1], s=10, color="blue", alpha=0.6)
+    axes[0].set_title("Original 2D Domain (Cube Face Coordinates)")
+    axes[0].set_xlim(-1.5, 1.5)
+    axes[0].set_ylim(-1.5, 1.5)
+    axes[0].set_aspect('equal')
+
+    axes[1].scatter(warped_points[:, 0], warped_points[:, 1], s=10, color="red", alpha=0.6)
+    axes[1].set_title("Warped 2D Domain (UV Coordinates)")
+    axes[1].set_xlim(-1.5, 1.5)
+    axes[1].set_ylim(-1.5, 1.5)
+    axes[1].set_aspect('equal')
+
+    plt.tight_layout()
     plt.show()
