@@ -1,1 +1,4 @@
 test_images/
+
+*.pyc
+__pycache__/
