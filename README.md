@@ -10,6 +10,21 @@ Adapted in part from Magnus Gaertner's Master's Thesis (ETH Zurich).
 2. Projects 3D points to cube, warps cube faces to sphere. De-dupes points by choosing min-depth point per pixel in output sphere.
 ![Screenshot from 2024-10-25 11-26-01](https://github.com/user-attachments/assets/68aa0d99-dfc9-4f20-bc45-3040ab81e3f8)
 
+## Setup
+#### Clone the repository
+`git clone https://github.com/Kappibw/sphere_cam.git`
+`cd sphere_cam`
+
+#### Create and activate the Conda environment
+`conda env create -f environment.yml`
+`conda activate spherecam`
+
+#### Install the Python package in editable mode
+`pip install -e .`
+
+#### Verify the installation
+`python -c "import sphere_cam"`
+
 
 ## Usage
 To run on a single test image:
