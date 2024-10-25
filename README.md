@@ -13,10 +13,12 @@ Adapted in part from Magnus Gaertner's Master's Thesis (ETH Zurich).
 ## Setup
 #### Clone the repository
 `git clone https://github.com/Kappibw/sphere_cam.git`
+
 `cd sphere_cam`
 
 #### Create and activate the Conda environment
 `conda env create -f environment.yml`
+
 `conda activate spherecam`
 
 #### Install the Python package in editable mode
