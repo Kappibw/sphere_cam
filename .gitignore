@@ -1,4 +1,10 @@
 test_images/
+# Include particular default test images
+!test_images/front_1.pt
+!test_images/left_1.pt
+!test_images/right_1.pt
+!test_images/rear_1.pt
+!test_images/test_depth.pt
 
 *.pyc
 __pycache__/

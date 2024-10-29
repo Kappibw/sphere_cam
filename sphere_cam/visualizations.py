@@ -79,7 +79,7 @@ def visualize_cube_sphere(cube_tensor, camera_data=None):
 
     # Prepare figure for visualization
     fig, axes = plt.subplots(3, 4, figsize=(16, 8))
-    plt.suptitle("Cube Sphere Visualization - Depth and Semantic Classes")
+    plt.suptitle("Cube Sphere Visualization - Depth")
 
     vmin, vmax = 0, 20  # Adjust based on your depth data range
 
