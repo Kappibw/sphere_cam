@@ -9,18 +9,9 @@ def extrinsic_matrix_from_pos_quat(pos, quat):
         [2 * (x * y + w * z), 1 - 2 * (x**2 + z**2), 2 * (y * z - w * x)],
         [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x**2 + y**2)]
     ], dtype=torch.float32)
-    # Change from world to camera coordinates
-    # rot_world_to_cam = torch.tensor([
-    # [0, 0, 1],
-    # [1, 0, 0],
-    # [0, -1, 0]
-    # ], dtype=torch.float32)
-    # rotation_matrix = torch.mm(rot_world_to_cam, rotation_matrix.T)
     extrinsic = torch.eye(4, dtype=torch.float32)
     extrinsic[:3, :3] = rotation_matrix
     extrinsic[:3, 3] = pos
-    # Print to two decimal places
-    print(torch.round(extrinsic * 100) / 100)
     return extrinsic
 
 file_path = Path(__file__).parent / "test_images/"
