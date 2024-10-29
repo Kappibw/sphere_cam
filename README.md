@@ -1,5 +1,9 @@
 # Spherical Camera
-Python tool that maps images taken from multiple cameras onto an egocentric sphere seen from the origin.
+Python tool that maps images taken from multiple cameras onto an egocentric sphere seen from the origin, with an aribitrary number of extra data points per pixel (eg: semantics).
+
+![Screenshot from 2024-10-29 22-06-56](https://github.com/user-attachments/assets/281324db-0ca1-41bf-b109-e0f8f2ce1c0f)
+![Screenshot from 2024-10-29 22-06-39](https://github.com/user-attachments/assets/406b24c7-e7d3-41cf-8b2f-75a78946a5ae)
+![Screenshot from 2024-10-29 22-06-50](https://github.com/user-attachments/assets/979fdcf6-44ea-443e-a6d9-d15a8a36307b)
 
 Adapted in part from Magnus Gaertner's Master's Thesis (ETH Zurich).
 
@@ -41,3 +45,5 @@ python -c "import sphere_cam"
 ## Usage
 To run on a single test image:
 `python test_single_image.py`
+
+> Note: this codebase assumes that input depth images are in default camera coordinates: y down, z forwards, and that world coordinates are x forward, z up.
