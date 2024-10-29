@@ -39,7 +39,7 @@ def deproject_pointcloud(depth_image, intrinsic, extrinsic=None, device=None):
     # Create a grid of pixel coordinates for the depth image (height x width)
     u_coords, v_coords = torch.meshgrid(torch.arange(0, height, device=device), 
                                         torch.arange(0, width, device=device), 
-                                        indexing='ij')  # (width, height) grids
+                                        indexing='ij')
     
     # Normalize the pixel coordinates using the intrinsic parameters
     # Convert (u, v) image coordinates to (x, y) in normalized camera coordinates
