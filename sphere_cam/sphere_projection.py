@@ -57,11 +57,12 @@ def deproject_pointcloud(depth_image, intrinsic, extrinsic=None, device=None):
     z_coords = depth_image  # z is the depth value for each pixel
     x_coords = x_norm * z_coords  # x = x_norm * depth
     y_coords = y_norm * z_coords  # y = y_norm * depth
-    
+
     # Combine the x, y, z coordinates into the points_3d tensor
-    points_3d[..., 0] = x_coords  # Assign x to the first channel
-    points_3d[..., 1] = y_coords  # Assign y to the second channel
-    points_3d[..., 2] = z_coords  # Assign z (depth) to the third channel
+    # Change to world coordinate system, x forward, z up, y left
+    points_3d[..., 0] = z_coords  # Assign z camera data (depth) to the x channel in world coordinates.
+    points_3d[..., 1] = x_coords  # Assign x camera data (left) to the y channel in world coordinates.
+    points_3d[..., 2] = y_coords  # Assign y camera data (up) to the z channel in world coordinates.  
     
     # If no extrinsic matrix is provided, return the points in camera coordinates
     if extrinsic is None:
@@ -70,7 +71,8 @@ def deproject_pointcloud(depth_image, intrinsic, extrinsic=None, device=None):
     # If an extrinsic matrix is provided, apply it to transform points to the world coordinates
     # Convert the points to homogeneous coordinates (by adding a 1 at the end of each [x, y, z] tuple)
     ones = torch.ones((height, width), device=device)
-    points_homogeneous = torch.stack([x_coords, y_coords, z_coords, ones], dim=-1)  # (height, width, 4)
+    # Use world coordinate system, x forward, z up, y left
+    points_homogeneous = torch.stack([z_coords, x_coords, y_coords, ones], dim=-1)  # (height, width, 4)
     
     # Apply the extrinsic transformation (4x4 matrix) to convert points to the world frame
     points_transformed = torch.matmul(points_homogeneous, extrinsic.T)  # Multiply by the transpose of extrinsic
@@ -146,9 +148,9 @@ def get_cube_coordinates(points_coordinates, distances, warping_method):
 
     # Compute the side index based on the dominant dimension and its sign
     cube_face_idx = torch.zeros_like(max_dim_idxs)
-    cube_face_idx = torch.where((max_dim_idxs == 0) & (max_dim_signs == -1), torch.tensor(2, device=device), cube_face_idx)
-    cube_face_idx = torch.where((max_dim_idxs == 1) & (max_dim_signs == 1), torch.tensor(3, device=device), cube_face_idx)
-    cube_face_idx = torch.where((max_dim_idxs == 1) & (max_dim_signs == -1), torch.tensor(1, device=device), cube_face_idx)
+    cube_face_idx = torch.where((max_dim_idxs == 0) & (max_dim_signs == -1), torch.tensor(1, device=device), cube_face_idx)
+    cube_face_idx = torch.where((max_dim_idxs == 1) & (max_dim_signs == 1), torch.tensor(2, device=device), cube_face_idx)
+    cube_face_idx = torch.where((max_dim_idxs == 1) & (max_dim_signs == -1), torch.tensor(3, device=device), cube_face_idx)
     cube_face_idx = torch.where((max_dim_idxs == 2) & (max_dim_signs == 1), torch.tensor(4, device=device), cube_face_idx)
     cube_face_idx = torch.where((max_dim_idxs == 2) & (max_dim_signs == -1), torch.tensor(5, device=device), cube_face_idx)
 
@@ -163,11 +165,11 @@ def get_cube_coordinates(points_coordinates, distances, warping_method):
     # of the 2D coordinates on the cube sides.
     face_mapping = torch.tensor([
         [4, 5, 0],  # front
-        [3, 5, 4],  # rear
-        [1, 5, 3],  # left
-        [0, 5, 1],  # right
+        [1, 5, 3],  # rear
+        [0, 5, 1],  # left
+        [3, 5, 4],  # right
         [4, 0, 2],  # top
-        [4, 3, 5]   # bottom
+        [4, 3, 5],  # bottom
     ], device=device)
 
     # Gather width, height, and cosine dimension indices for the points

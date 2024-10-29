@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-def visualize_point_cloud(points_3d, depth_image, downsample_factor=10):
+def visualize_point_cloud(points_3d, depth_image=None, name=None, downsample_factor=5):
     """
     Visualizes the 3D point cloud and the original depth image side by side.
 
@@ -24,17 +24,23 @@ def visualize_point_cloud(points_3d, depth_image, downsample_factor=10):
     
     # Create a figure for both the depth image and 3D point cloud
     fig = plt.figure(figsize=(12, 6))
+    name = name if name is not None else "3D Point Cloud Visualization"
+    fig.suptitle(f'{name}: Downsampled by {downsample_factor}x', fontsize=16)
     
     # Plot the depth image (2D)
-    ax1 = fig.add_subplot(121)
-    ax1.imshow(depth_image.cpu().numpy(), cmap='viridis')
-    ax1.set_title('Original Depth Image')
-    ax1.set_xlabel('Width')
-    ax1.set_ylabel('Height')
-    plt.colorbar(ax1.imshow(depth_image.cpu().numpy(), cmap='viridis'), ax=ax1)
+    if depth_image is not None:
+        ax1 = fig.add_subplot(121)
+        ax1.imshow(depth_image.cpu().numpy(), cmap='viridis')
+        ax1.set_title('Original Depth Image')
+        ax1.set_xlabel('Width')
+        ax1.set_ylabel('Height')
+        plt.colorbar(ax1.imshow(depth_image.cpu().numpy(), cmap='viridis'), ax=ax1)
 
     # Create the 3D point cloud plot
-    ax2 = fig.add_subplot(122, projection='3d')
+    if depth_image is not None:
+        ax2 = fig.add_subplot(122, projection='3d')
+    else:
+        ax2 = fig.add_subplot(111, projection='3d')
     
     # Plot the points in 3D
     ax2.scatter(x, y, z, c=z, cmap='viridis', marker='o', s=1, alpha=0.8)
@@ -52,7 +58,7 @@ def visualize_point_cloud(points_3d, depth_image, downsample_factor=10):
     plt.show()
 
 
-def visualize_cube_sphere(cube_tensor):
+def visualize_cube_sphere(cube_tensor, camera_data=None):
     """
     Visualize a cube-sphere tensor with depth and semantic data for each face.
     
@@ -65,16 +71,17 @@ def visualize_cube_sphere(cube_tensor):
         raise ValueError("Expected tensor shape to be (6, 64, 64, 2).")
     
     # Set up the layout of faces for the cube representation
-    # We will assume the order of faces is: front, left, right, back, top, bottom
     face_layout = [
         [None,    4,    None,  None],  # top
-        [1,       0,    2,     3],     # middle row (left, front, right, back)
+        [2,       0,    3,     1],     # middle row (left, front, right, back)
         [None,    5,    None,  None]   # bottom
     ]
 
     # Prepare figure for visualization
     fig, axes = plt.subplots(3, 4, figsize=(16, 8))
     plt.suptitle("Cube Sphere Visualization - Depth and Semantic Classes")
+
+    vmin, vmax = 0, 20  # Adjust based on your depth data range
 
     # Display the depth and semantic data separately
     for row in range(3):
@@ -88,8 +95,11 @@ def visualize_cube_sphere(cube_tensor):
             else:
                 # Display depth data
                 depth_img = cube_tensor[face_index, :, :, 0].cpu().numpy()
-                axes[row, col].imshow(depth_img, cmap='viridis')
+                img = axes[row, col].imshow(depth_img.T, cmap='viridis', vmin=vmin, vmax=vmax)
                 axes[row, col].set_title(f"Face {face_index} - Depth")
+                
+                # Add colorbar for this subplot
+                fig.colorbar(img, ax=axes[row, col], orientation='vertical', fraction=0.046, pad=0.04)
                 axes[row, col].axis('off')
     
     # Create a new figure for semantic data
@@ -104,9 +114,22 @@ def visualize_cube_sphere(cube_tensor):
             else:
                 # Display semantic class data
                 semantic_img = cube_tensor[face_index, :, :, 1].cpu().numpy()
-                axes[row, col].imshow(semantic_img, cmap='tab20')
+                axes[row, col].imshow(semantic_img.T, cmap='tab20')
                 axes[row, col].set_title(f"Face {face_index} - Semantic")
                 axes[row, col].axis('off')
+
+    if camera_data is not None:
+        # Create a new figure for original depth images
+        fig, axes = plt.subplots(1, 4, figsize=(16, 8))
+        plt.suptitle("Original Depth Images")
+        i = 0
+        for cam_name, cam in camera_data.items():
+            depth_img = torch.load(cam["file_path"]).cpu().numpy()
+            axes[i].imshow(depth_img, cmap='viridis')
+            axes[i].set_title(f"{cam_name} - Depth Image")
+            axes[i].axis('off')
+            i += 1
+
     plt.show()
 
 def vizualize_warp(warp_instance):
