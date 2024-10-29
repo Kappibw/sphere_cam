@@ -44,9 +44,13 @@ python -c "import sphere_cam"
 
 ## Usage
 To run on a single test image:
-`python test_single_image.py`
+```
+python test_single_image.py
+```
 
 To run with 4 images (front, back, left, right):
-`python test_omnidirectional_images.py`
+```
+python test_omnidirectional_images.py
+```
 
 > Note: this codebase assumes that input depth images are in default camera coordinates: y down, z forwards, and that world coordinates are x forward, z up.
