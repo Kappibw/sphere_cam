@@ -66,9 +66,6 @@ for key, cam in camera_data.items():
     # Transfer depth image and matrices to the correct device
     depth_image = depth_image.to(device)
     intrinsic = intrinsic.to(device)
-    # Transfer depth image and matrices to the correct device
-    depth_image = depth_image.to(device)
-    intrinsic = intrinsic.to(device)
     extrinsic = extrinsic.to(device)
 
     # Generate the 3D point cloud
