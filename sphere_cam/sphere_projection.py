@@ -49,9 +49,6 @@ def deproject_pointcloud(depth_image, intrinsic, extrinsic=None, device=None):
     y_norm = -y_norm
     x_norm = -x_norm
 
-    # Set the infinity values (20) to 0
-    # depth_image = torch.where(depth_image==20,0,depth_image)
-    
     # Compute the 3D x and y coordinates at unit depth
     # Scale x, y by the actual depth from the depth_image
     z_coords = depth_image  # z is the depth value for each pixel
