@@ -244,17 +244,6 @@ def normalized_image_coordinates_to_image_coordinates(normalized_w, normalized_h
     return torch.floor(float_idx_w_floor).type(torch.int), torch.floor(float_idx_h_floor).type(torch.int)
 
 
-def scatter_nd(indices, updates, shape, reduction='sum', previous_values=None):
-    output = torch.zeros(*shape, device=updates.device)
-    if previous_values is not None:
-        output = previous_values.clone()
-    if reduction == 'sum':
-        output.index_add_(0, indices.long().view(-1), updates.view(-1, updates.shape[-1]))
-    else:
-        raise NotImplementedError(f"Reduction '{reduction}' is not implemented.")
-    return output
-
-
 def project_features_to_sphere(cube_face_idx, cube_face_coordinates, distances, semantics, resolution, device):
     """
     Projects features from cube faces onto a spherical surface.
